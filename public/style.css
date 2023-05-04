@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap');
+
+body {
+	margin: 0;
+	padding: 0;
+	background-color: rgb(19, 19, 19) !important;
+}
+
+* {
+	font-family: 'Source Sans Pro', sans-serif;
+	box-sizing: border-box;
+	font-size: clamp(15px, 0.5em, 24px);
+}
+
+table {
+	background-color: rgb(243, 243, 243);
+}
+
+td:not(td[class='footer']) {
+	vertical-align: top;
+	max-height: 50px;
+	min-height: 50px;
+	overflow: hidden;
+}
+
+td {
+	width: 42.5%;
+}
+
+td:first-child {
+	width: 5%;
+}
+
+td:nth-child(2) td:nth-child(3) {
+	width: 42.5%;
+}
+
+td:last-child {
+	width: 10%;
+}
+
+tr:first-child {
+	background: linear-gradient(90deg, #7676ff, #a5ff96);
+}
+
+#navigateBefore:hover,
+#navigateNext:hover {
+	cursor: pointer;
+}
+
+.last-update {
+	text-align: right;
+	right: 10;
+}
+
+#extra {
+	font-size: 8px;
+	position: absolute;
+	margin-top: calc(clamp(15px, 0.5em, 24px) + 2px);
+}
+
+.footer p {
+	margin: 0;
+}
+
+.footer p:not(:last-child) {
+	margin-bottom: 5px;
+}
+
+@media only screen and (max-width: 633px) {
+	#container {
+		padding: 0;
+	}
+}

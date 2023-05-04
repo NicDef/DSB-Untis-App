@@ -1,0 +1,28 @@
+{
+	"name": "dsb",
+	"version": "1.0.0",
+	"author": "Nicolas Defée",
+	"main": "server.js",
+	"scripts": {
+		"start": "node server",
+		"dev": "nodemon server"
+	},
+	"keywords": [],
+	"description": "dsb",
+	"license": "ISC",
+	"dependencies": {
+		"body-parser": "^1.20.1",
+		"browserify": "^17.0.0",
+		"dsb-untis": "^0.4.3",
+		"esmify": "^2.1.1",
+		"express": "^4.18.1",
+		"on-finished": "^2.4.1",
+		"server": "^1.0.38",
+		"socket.io": "^4.5.4",
+		"socket.io-client": "^4.6.0",
+		"web-push": "^3.5.0"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.19"
+	}
+}
