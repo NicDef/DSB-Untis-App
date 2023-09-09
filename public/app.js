@@ -6,50 +6,47 @@ const socket = io();
 var dsbDataRaw;
 var dsbData;
 
+var VALID = true;
+var MAX_DATASET_ID;
+var DATASET_ID;
+
 socket.on('data', async (data) => {
 	dsbDataRaw = await JSON.parse(data);
 	dsbData = formatData(dsbDataRaw[0]);
+	if (dsbData == undefined || dsbDataRaw == undefined) return (VALID = false);
+	else VALID = true;
+
+	MAX_DATASET_ID = dsbData.length - 1;
+
+	console.log(MAX_DATASET_ID);
 });
 
 const selectedClass = document.getElementById('selectClass');
 const container = document.getElementById('container');
 
-const days = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+function showData(dataset_id = 0) {
+	if (!VALID) return;
 
-var today = new Date();
-var dd = String(today.getDate()).padStart(2, '0');
-var m = String(today.getMonth() + 1); //January is 0!
-var yyyy = today.getFullYear();
-
-today = dd + '.' + m + '.' + yyyy;
-var day = days[new Date().getDay()];
-const defaultDate = today + ' ' + day;
-
-function showData(dataDate = defaultDate) {
-	if (dsbData == undefined || dsbDataRaw == undefined) return;
-
-	console.log(dsbData);
+	console.log(dsbData, dsbDataRaw);
 
 	const myClazz = selectedClass.value;
 
 	setLocalStorage(myClazz);
 
 	var lastUpdate = dsbDataRaw[0]['dateString'];
-	for (let i = 0; i < dsbData.length; i++) {
-		if (dsbData[i][1] == dataDate) {
-			try {
-				const tableElem = document.getElementById('table');
-				container.removeChild(tableElem);
-			} catch {}
 
-			var table = [...dsbData[i][0]];
-			createTable(table, myClazz, dataDate, lastUpdate);
-			return;
-		}
-	}
+	if (container.childNodes.length > 0) container.removeChild(document.getElementById('table'));
+
+	var data = [...dsbData[dataset_id]];
+	DATASET_ID = dataset_id;
+
+	console.log(DATASET_ID);
+
+	createTable(data[0], myClazz, data[1], lastUpdate);
 }
 
 function createTable(table, selectedClass, date, lastUpdate) {
+	console.log('table');
 	var tableElem = document.createElement('table'); // Tabelle erstellen
 	tableElem.classList.add('table');
 	tableElem.id = 'table';
@@ -93,7 +90,7 @@ function createTable(table, selectedClass, date, lastUpdate) {
 		tableBody.appendChild(row); // Die Reihe an den Tbody anhängen
 	}
 
-	// fillTableFooter(tableBody, info);
+	fillTableFooter(tableBody, dsbData[DATASET_ID][2]);
 
 	tableElem.appendChild(tableBody);
 	container.appendChild(tableElem);
@@ -197,6 +194,12 @@ function fillTableFooter(parent, info) {
 
 	for (let i = 0; i < info.length; i++) {
 		var p = document.createElement('p');
+		console.log(info[i]);
+
+		for (let j = 0; j < info[i].length; j++) {
+			info[i][j] = info[i][j].replace('&nbsp;', '');
+		}
+
 		p.appendChild(document.createTextNode(info[i]));
 		footer.appendChild(p);
 	}
@@ -345,39 +348,13 @@ function formatData(data) {
 }
 
 function dayBefore() {
-	const dateString = document.getElementById('nav').innerHTML;
-
-	let dateInput = dateString.split(' ')[0];
-	dateInput = dateInput.split('.');
-
-	let newDate = new Date(parseInt(dateInput[2]), parseInt(dateInput[1]) - 1, parseInt(dateInput[0]) - 1);
-
-	let day = days[newDate.getDay()];
-
-	var dd = String(newDate.getDate()).padStart(2, '0');
-	var m = String(newDate.getMonth() + 1); //January is 0!
-	var yyyy = newDate.getFullYear();
-
-	newDate = dd + '.' + m + '.' + yyyy;
-
-	showData(newDate + ' ' + day);
+	if (DATASET_ID - 1 >= 0) {
+		showData(DATASET_ID - 1);
+	}
 }
 
 function dayNext() {
-	const dateString = document.getElementById('nav').innerHTML;
-
-	let dateInput = dateString.split(' ')[0];
-	dateInput = dateInput.split('.');
-
-	let newDate = new Date(parseInt(dateInput[2]), parseInt(dateInput[1]) - 1, parseInt(dateInput[0]) + 1);
-
-	let day = days[newDate.getDay()];
-
-	var dd = String(newDate.getDate()).padStart(2, '0');
-	var m = String(newDate.getMonth() + 1); //January is 0!
-	var yyyy = newDate.getFullYear();
-
-	newDate = dd + '.' + m + '.' + yyyy;
-
-	showData(newDate + ' ' + day);
+	if (DATASET_ID + 1 <= MAX_DATASET_ID) {
+		showData(DATASET_ID + 1);
+	}
 }
